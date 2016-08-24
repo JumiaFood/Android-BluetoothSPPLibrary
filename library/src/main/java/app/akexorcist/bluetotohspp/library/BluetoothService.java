@@ -215,7 +215,7 @@ public class BluetoothService {
                     tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE, UUID_ANDROID_DEVICE);
                 else
                     tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME_SECURE, UUID_OTHER_DEVICE);
-            } catch (IOException e) { }
+            } catch (IOException | NullPointerException e) { }
             mmServerSocket = tmp;
         }
 
@@ -229,7 +229,7 @@ public class BluetoothService {
                     // This is a blocking call and will only return on a
                     // successful connection or an exception
                     socket = mmServerSocket.accept();
-                } catch (IOException e) {
+                } catch (IOException | NullPointerException e) {
                     break;
                 }
 
@@ -260,7 +260,7 @@ public class BluetoothService {
             try {
                 mmServerSocket.close();
                 mmServerSocket = null;
-            } catch (IOException e) { }
+            } catch (IOException | NullPointerException e) { }
         }
 
         public void kill() {
@@ -305,7 +305,7 @@ public class BluetoothService {
                 // Close the socket
                 try {
                     mmSocket.close();
-                } catch (IOException e2) { }
+                } catch (IOException | NullPointerException e2) { }
                 connectionFailed();
                 return;
             } catch (NullPointerException e) {
@@ -325,7 +325,7 @@ public class BluetoothService {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) { }
+            } catch (IOException | NullPointerException e) { }
         }
     }
 
@@ -384,12 +384,7 @@ public class BluetoothService {
                     } else {
                         arr_byte.add(data);
                     }
-                } catch (IOException e) {
-                    connectionLost();
-                    // Start the service over to restart listening mode
-                    BluetoothService.this.start(BluetoothService.this.isAndroid);
-                    break;
-                } catch (NullPointerException e) {
+                } catch (IOException | NullPointerException e) {
                     connectionLost();
                     break;
                 }
@@ -409,13 +404,13 @@ public class BluetoothService {
                 // Share the sent message back to the UI Activity
                 mHandler.obtainMessage(BluetoothState.MESSAGE_WRITE
                         , -1, -1, buffer).sendToTarget();
-            } catch (IOException e) { }
+            } catch (IOException | NullPointerException e) { }
         }
 
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) { }
+            } catch (IOException | NullPointerException e) { }
         }
     }
 }
